@@ -1,0 +1,205 @@
+<html>
+
+	<head>
+		
+		<title>CodePlayer Simulator</title>
+		
+		<script type="text/javascript" src="jquery.min.js"></script>
+		
+		<style type="text/css">
+		
+			body{
+			
+				font-family: sans-serif;
+				padding: 0;
+				margin: 0;
+			}
+			
+			#header{
+				
+				width: 100%
+				background-color: #EEEEEE;
+				padding: 5px;
+				height: 30px;
+			}
+			
+			
+			
+			#logo{
+			
+				float: left;
+				font-weight: bold;
+			}
+			#word1{
+				float: left;
+				margin: 0;
+			}
+			#word2{
+				float: left;
+				margin: 0;
+				padding-left: 5px;
+				font-size: 10
+			}
+
+			#buttonContainer{
+			
+				width: 240px;
+				margin: 0 auto;
+				background-color: orange;
+			}
+			
+			.SwitchButton{
+				
+				float: left;
+				border: 1px solid grey;
+				padding: 6px;
+				border-right: none;
+				font-size: 90%;
+				background-color: orange;
+			}
+			
+			#html{
+			
+				border-top-left-radius: 4px;
+				border-bottom-left-radius:4px;
+				
+			}
+			#output{
+			
+				border-top-right-radius: 4px;
+				border-bottom-right-radius:4px;
+				border-right: 1px solid grey;
+				
+			}
+			
+			.active{
+			
+				background-color: #E8F2FF;
+			}
+			
+			.heigtlightedButton{
+			
+				background-color: gray;
+			}
+			
+			textarea{
+				
+				width: 50%;
+				resize: none;
+				border-top: none;
+				border-color: grey;
+			}
+			
+			.panel{
+			
+				float:left;
+				width: 50%;
+				border-left:none;
+			}
+			
+			iframe{
+			
+				border:none;
+			}
+			
+			.hidden{
+			
+				display:none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Top of the nav bar-->
+		<div id="header">
+		
+			<div id="logo">
+			
+				<h3 id="word1">CodePlayer</h3>
+				<p id="word2">by YeeHin Kwok</p>
+			</div>
+		
+			
+				<div id="buttonContainer">
+				
+					<div class="SwitchButton active" id="html">HTML</div>
+					
+					<div class="SwitchButton" id="css">CSS</div>
+					
+					<div class="SwitchButton" id="javascript">JavaScript</div>
+					
+					<div class="SwitchButton active" id="output">OutPut</div>
+					
+				</div>
+		</div>	
+		
+		<div id="bodyContainer">
+			
+			<textarea id="htmlPanel" class="panel"><p id="paragraph">Hello World!</p></textarea>
+			
+			<textarea id="cssPanel" class="panel hidden">p { color: green;}</textarea>
+			
+			<textarea id="javascriptPanel" class="panel hidden">document.getElementById("paragraph").innerHTML = "Hello Welcome!";</textarea>
+			
+			<iframe id="outputPanel" class="panel"></iframe>
+				
+		</div>
+			
+		<script type="text/javascript">
+		
+			function updateOutput() {
+                
+                $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $("#htmlPanel").val() + "</body></html>");
+                
+                document.getElementById("outputPanel").contentWindow.eval($("#javascriptPanel").val());
+                
+            }
+			
+			<!-- switch color for button when user mouse hover and when the user stop hovering-->
+			$(".SwitchButton").hover(function(){
+				
+				$(this).addClass("highlightedButton");
+				
+			},function(){
+				
+				$(this).removeClass("highlightedButton");
+				
+			});
+				
+			$(".SwitchButton").click(function(){
+			
+					$(this).toggleClass("active");
+					
+					$(this).removeClass("highlightedButton");
+					
+					var panelId = $(this).attr("id") + "Panel";
+					
+					<!--alert(panelId);-->
+					
+					$("#" + panelId).toggleClass("hidden");
+					
+					<!--change the panel width-->
+					var numberofactivepanel = 4 - $('.hidden').length;
+					
+					$(".panel").width(($(window).width()/ numberofactivepanel) - 10);
+			})
+			
+			<!-- Set up text area for coding and not resizable-->
+			$(".panel").height($(window).height() - $("#header").height() - 15);
+			
+			<!-- Set up text area for output and not resizable-->
+			$(".panel").width(($(window).width() / 2) -10);
+			
+			<!--Change HTML of an iFrame with jQuery https://stackoverflow.com/questions/5924936/change-html-of-an-iframe-with-jquery$("iframe").contents().find("html").html($("#htmlPanel").val());-->
+			
+			<!--How can I bind to the change event of a textarea in jQuery? https://stackoverflow.com/questions/11338592/how-can-i-bind-to-the-change-event-of-a-textarea-in-jquery/25865572 $("textarea").on('change keyup paste', function() {$("iframe").contents().find("html").html($("#htmlPanel").val());});-->
+			
+			updateOutput();
+            
+            $("textarea").on('change keyup paste', function() {
+    
+                updateOutput();
+            });
+		</script>
+	</body>
+</html>
